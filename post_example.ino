@@ -31,8 +31,17 @@ void setup() {
 
   Serial.println("\nWiFi connected");
   Serial.println("IP address: ");
-  Serial.println(WiFi.localIP());
+  Serial.println(WiFi.localIP());  
 
+  sendSms("1");
+}
+
+void loop() {
+  //Only one request needed.
+
+}
+
+void sendSms(String sensor) {  
   std::unique_ptr<BearSSL::WiFiClientSecure>client(new BearSSL::WiFiClientSecure);
 
   client->setFingerprint(fingerprint);
@@ -50,7 +59,7 @@ void setup() {
   http.addHeader("X-AUTH-TOKEN", apiToken);
 
   //Sensor from web Portal
-  int httpCode = http.POST("{\"smsTexts\": \"Das ist eine Testnachricht\",\"sensor\": 1}");
+  int httpCode = http.POST("{\"smsTexts\": \"Das ist eine Testnachricht\",\"sensor\": " + sensor + "}");
 
 
   Serial.println("Sending");
@@ -63,9 +72,4 @@ void setup() {
       Serial.printf("[HTTP] POST... failed, error: %s\n", http.errorToString(httpCode).c_str());
     }
   }
-}
-
-void loop() {
-  //Only one request needed.
-
 }
